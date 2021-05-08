@@ -1,18 +1,25 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Xunit;
 
 namespace SnackShackTDD.Tests
 {
-    public class UnitTest1
+    public class SnackShackTests
     {
+        private TestIOHelper ioHelper = new();
+        private readonly SnackShack snackShack;
+
+        public SnackShackTests()
+        {
+            snackShack = new SnackShack(ioHelper);
+        }
+
         [Fact]
         public void InvalidInputForNumberOfSandiches()
         {
-            var ioHelper = new TestIOHelper(new[] { "x" });
-            var snackShack = new SnackShack(ioHelper);
-            snackShack.Run();
+            ioHelper.SetInputQueue("x");
+            
+            snackShack.TakeOrder();
 
             Assert.Collection(ioHelper.Messages,
                 item => Assert.Equal("How many sandwiches?", item),
@@ -23,9 +30,9 @@ namespace SnackShackTDD.Tests
         [Fact]
         public void ZeroSandiches()
         {
-            var ioHelper = new TestIOHelper(new[] { "0" });
-            var snackShack = new SnackShack(ioHelper);
-            snackShack.Run();
+            ioHelper.SetInputQueue("0");
+            
+            snackShack.TakeOrder();
 
             Assert.Collection(ioHelper.Messages,
                 item => Assert.Equal("How many sandwiches?", item),
@@ -36,9 +43,9 @@ namespace SnackShackTDD.Tests
         [Fact]
         public void OneSandwich()
         {
-            var ioHelper = new TestIOHelper(new[] { "1" });
-            var snackShack = new SnackShack(ioHelper);
-            snackShack.Run();
+            ioHelper.SetInputQueue("1");
+            
+            snackShack.TakeOrder();
 
             Assert.Collection(ioHelper.Messages,
                 item => Assert.Equal("How many sandwiches?", item),
@@ -51,9 +58,9 @@ namespace SnackShackTDD.Tests
         [Fact]
         public void TwoSandwiches()
         {
-            var ioHelper = new TestIOHelper(new[] { "2" });
-            var snackShack = new SnackShack(ioHelper);
-            snackShack.Run();
+            ioHelper.SetInputQueue("2");
+            
+            snackShack.TakeOrder();
 
             Assert.Collection(ioHelper.Messages,
                 item => Assert.Equal("How many sandwiches?", item),
@@ -68,9 +75,9 @@ namespace SnackShackTDD.Tests
         [Fact]
         public void FourSandwiches()
         {
-            var ioHelper = new TestIOHelper(new[] { "4" });
-            var snackShack = new SnackShack(ioHelper);
-            snackShack.Run();
+            ioHelper.SetInputQueue("4");
+            
+            snackShack.TakeOrder();
 
             Assert.Collection(ioHelper.Messages,
                 item => Assert.Equal("How many sandwiches?", item),
@@ -84,28 +91,6 @@ namespace SnackShackTDD.Tests
                 item => Assert.Equal("5:30 serve sandwich 4", item),
                 item => Assert.Equal("6:00 take a well earned break!", item)
             );
-        }
-    }
-
-    public class TestIOHelper : IIOHelper
-    {
-        private readonly IEnumerator<string> input;
-        public List<string> Messages = new();
-
-        public TestIOHelper(IEnumerable<string> input)
-        {
-            this.input = input.GetEnumerator(); ;
-        }
-
-        public string ReadLine()
-        {
-            if (input.MoveNext())
-                return input.Current;
-            return "";
-        }
-        public void WriteLine(string message)
-        {
-            Messages.Add(message);
         }
     }
 }
