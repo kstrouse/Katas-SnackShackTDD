@@ -2,11 +2,14 @@
 {
     public class SnackShack
     {
+        private const int FiveMintutes = 5 * 60;
         private readonly IIOHelper ioHelper;
+        private readonly IOrderEstimator orderEstimator;
 
-        public SnackShack(IIOHelper ioHelper)
+        public SnackShack(IIOHelper ioHelper, IOrderEstimator orderEstimator)
         {
             this.ioHelper = ioHelper;
+            this.orderEstimator = orderEstimator;
         }
 
         public void TakeOrder()
@@ -23,6 +26,14 @@
             if (sandwichCount == 0)
             {
                 ioHelper.WriteLine("You didn't order any sandwiches.");
+                return;
+            }
+
+            orderEstimator.AddSandwiches(sandwichCount);
+            var secondsToMakeOrder = orderEstimator.GetEstimate();
+            if (secondsToMakeOrder > FiveMintutes)
+            {
+                ioHelper.WriteLine("We're sorry.  Your order will take to long to serve and cannot be accepted.");
                 return;
             }
 

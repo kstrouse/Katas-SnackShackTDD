@@ -6,8 +6,7 @@ namespace SnackShackTDD
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            new SnackShack(new ConsoleIOHelper()).TakeOrder();
-        }
+            new SnackShack(new ConsoleIOHelper(), new OrderEstimator()).TakeOrder();
+        } 
     }
 }
