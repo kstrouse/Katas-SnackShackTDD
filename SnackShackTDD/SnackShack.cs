@@ -17,26 +17,42 @@
             ioHelper.WriteLine("How many sandwiches?");
             var sandwichCountString = ioHelper.ReadLine();
 
-            if (!int.TryParse(sandwichCountString, out var sandwichCount))
-            {
-                ioHelper.WriteLine("You didn't enter a number.");
-                return;
-            }
+            if (!ValidInput(sandwichCountString, out var sandwichCount)) return;
+            if (!HasOrderToMake(sandwichCount)) return;
+            if (!CanMakeOrderOnTime(sandwichCount)) return;
 
-            if (sandwichCount == 0)
-            {
-                ioHelper.WriteLine("You didn't order any sandwiches.");
-                return;
-            }
+            MakeOrder(sandwichCount);
+        }
 
+        private bool ValidInput(string sandwichCountString, out int sandwichCount)
+        {
+            if (int.TryParse(sandwichCountString, out sandwichCount)) return true;
+
+            ioHelper.WriteLine("You didn't enter a number.");
+            return false;
+        }
+        private bool HasOrderToMake(int sandwichCount)
+        {
+            if (sandwichCount > 0) return true;
+
+            ioHelper.WriteLine("You didn't order any sandwiches.");
+            return false;
+        }
+
+        private bool CanMakeOrderOnTime(int sandwichCount)
+        {
             orderEstimator.AddSandwiches(sandwichCount);
             var secondsToMakeOrder = orderEstimator.GetEstimate();
             if (secondsToMakeOrder > FiveMintutes)
             {
                 ioHelper.WriteLine("We're sorry.  Your order will take to long to serve and cannot be accepted.");
-                return;
+                return false;
             }
+            return true;
+        }
 
+        private void MakeOrder(int sandwichCount)
+        {
             int elapsedSeconds = 0;
             ioHelper.WriteLine($"0:00 {sandwichCount} sandwich(es) orders placed, start making sandwich 1");
             elapsedSeconds += 60;
